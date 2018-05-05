@@ -2,11 +2,9 @@
  *	Red Black Tree Insertion
  *	Written by Jason Shi
  *	Allows the user to create a red black tree and delete, add, and print out the tree.
- *	This tree does not allow duplicates (there are several trains of thought on this so I just chose this method.
+ *	
  *
  */
-
-
 
 #include "Node.h"
 #include <iostream>
@@ -22,20 +20,19 @@ void rotateLeft(Node *&root, Node *&pt)
  
     pt->setRight(pt_right->getLeft());
  
-    if (pt->getRight() != NULL)
+    if (pt->getRight() != NULL){
         pt->getRight()->setParent(pt);
- 
+    }
     pt_right->setParent(pt->getParent());
  
-    if (pt->getParent() == NULL)
+    if (pt->getParent() == NULL){
         root = pt_right;
- 
-    else if (pt == pt->getParent()->getLeft())
+    }else if (pt == pt->getParent()->getLeft()){
         pt->getParent()->setLeft(pt_right);
- 
-    else
+}
+    else{
         pt->getParent()->setRight(pt_right);
- 
+    }
     pt_right->setLeft(pt);
     pt->setParent(pt_right);
 }
@@ -43,45 +40,38 @@ void rotateLeft(Node *&root, Node *&pt)
 void rotateRight(Node *&root, Node *&pt)
 {
     Node *pt_left = pt->getLeft();
- 
     pt->setLeft(pt_left->getRight());
- 
-    if (pt->getLeft() != NULL)
+    if (pt->getLeft() != NULL){
         pt->getLeft()->setParent(pt);
- 
+    }
     pt_left->setParent(pt->getParent());
  
-    if (pt->getParent() == NULL)
+    if (pt->getParent() == NULL){
         root = pt_left;
- 
-    else if (pt == pt->getParent()->getLeft())
+    }
+    else if (pt == pt->getParent()->getLeft()){
         pt->getParent()->setLeft(pt_left);
- 
-    else
+    }
+    else{
         pt->getParent()->setRight(pt_left);
- 
+    }
     pt_left->setRight(pt);
     pt->setParent( pt_left);
 }
 
 void fixTree(Node* &root, Node* &pt){
 	Node *parent_pt = NULL;
-    Node *grand_parent_pt = NULL;
- 
+    	Node *grand_parent_pt = NULL;
     while ((pt != root) && (pt->getColor() != 2) &&
            (pt->getParent()->getColor() == 1))
     {
- 
         parent_pt = pt->getParent();
         grand_parent_pt = pt->getParent()->getParent();
- 
         //if the parent is the left of grandparent
         if (parent_pt == grand_parent_pt->getLeft())
         {
- 
             Node *uncle_pt = grand_parent_pt->getRight();
- 
-            //the uncle is read
+            //the uncle is red
             if (uncle_pt != NULL && uncle_pt->getColor() == 1)
             {
                 grand_parent_pt->setColor(1);
@@ -90,8 +80,7 @@ void fixTree(Node* &root, Node* &pt){
                 pt = grand_parent_pt;
             }
  
-            else
-            {
+            else{
           
                 //   the new node is the right of parent
                 if (pt == parent_pt->getRight())
@@ -136,7 +125,7 @@ void fixTree(Node* &root, Node* &pt){
                     parent_pt = pt->getParent();
                 }
  
-                //else, it is right of parent
+                //else, it is right of parent, so rotate and swap the colors of the parent and grandparent
                 rotateLeft(root, grand_parent_pt);
 		int parentcolor = parent_pt->getColor();
 		int grandcolor = grand_parent_pt->getColor();
@@ -146,14 +135,14 @@ void fixTree(Node* &root, Node* &pt){
             }
         }
     }
- //set the root to be black
+ //set the root to be black (because the root must always be black in the end)
     root->setColor(2);
 
 }
 Node* addNode(Node* head, Node* pt){
 	if(head==NULL){
 		return pt;
-	}else if(head->getContent()>pt->getContent()){
+	}else if(head->getContent()>=pt->getContent()){
 	
                   
                         head->setLeft(addNode(head->getLeft(), pt));

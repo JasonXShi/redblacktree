@@ -13,22 +13,26 @@
 #include <cstdlib>
 #include <cmath>
 using namespace std;
+//declare methods
 void rotateLeft(Node *&root, Node *&pt);
 void rotateRight(Node *&root, Node *&pt);
 
+//call this function to fix the tree after every insertion
 void fixTree(Node* &root, Node* &pt){
+	//makes parent and grandparent of newly inserted node (helps with checking uncle and if parent is left or right)
 	Node *parent_pt = NULL;
     	Node *grand_parent_pt = NULL;
     while ((pt != root) && (pt->getColor() != 2) &&
            (pt->getParent()->getColor() == 1))
     {
+	    //set variables
         parent_pt = pt->getParent();
         grand_parent_pt = pt->getParent()->getParent();
         //if the parent is the left of grandparent
         if (parent_pt == grand_parent_pt->getLeft())
         {
             Node *uncle_pt = grand_parent_pt->getRight();
-            //the uncle is red
+            //the uncle is red - just recolor some nodes, no rotation is needed
             if (uncle_pt != NULL && uncle_pt->getColor() == 1)
             {
                 grand_parent_pt->setColor(1);
@@ -36,19 +40,16 @@ void fixTree(Node* &root, Node* &pt){
                 uncle_pt->setColor(2);
                 pt = grand_parent_pt;
             }
- 
+ 	
             else{
           
-                //   the new node is the right of parent
+                //  if the new node is the right of parent rotate the tree left
                 if (pt == parent_pt->getRight())
                 {
                     rotateLeft(root, parent_pt);
                     pt = parent_pt;
                     parent_pt = pt->getParent();
                 }
- 
-                /* 
-                   the new node is left of parent */
                 rotateRight(root, grand_parent_pt);
 		int parentcolor = parent_pt->getColor();
 		int grandcolor = grand_parent_pt->getColor();
@@ -64,7 +65,7 @@ void fixTree(Node* &root, Node* &pt){
         {
             Node *uncle_pt = grand_parent_pt->getLeft();
  
-           //the uncle is read
+           // if the uncle is read then recolor
             if ((uncle_pt != NULL) && (uncle_pt->getColor() == 1))
             {
                 grand_parent_pt->setColor(1);
@@ -72,8 +73,7 @@ void fixTree(Node* &root, Node* &pt){
                 uncle_pt->setColor(2);
                 pt = grand_parent_pt;
             }
-            else
-            {
+            else {
                 //the new node is left of its parent
                 if (pt == parent_pt->getLeft())
                 {
@@ -81,9 +81,7 @@ void fixTree(Node* &root, Node* &pt){
                     pt = parent_pt;
                     parent_pt = pt->getParent();
                 }
- 
-                //else, it is right of parent, so rotate and swap the colors of the parent and grandparent
-                rotateLeft(root, grand_parent_pt);
+                 rotateLeft(root, grand_parent_pt);
 		int parentcolor = parent_pt->getColor();
 		int grandcolor = grand_parent_pt->getColor();
 		parent_pt->setColor(grandcolor);
@@ -96,41 +94,33 @@ void fixTree(Node* &root, Node* &pt){
     root->setColor(2);
 
 }
+//recursive function that returns the head (usually same as input)
 Node* addNode(Node* head, Node* pt){
 	if(head==NULL){
+		//the root of the new tree is the new node to be added
 		return pt;
 	}else if(head->getContent()>=pt->getContent()){
-	
-                  
                         head->setLeft(addNode(head->getLeft(), pt));
 			//set parent of the new node
 			head->getLeft()->setParent(head);
-                
 	}else if(head->getContent()<pt->getContent()){
-	
 			head->setRight(addNode(head->getRight(), pt));
 			//set parent of the new node
 			head->getRight()->setParent(head);
-			
 		}
-	
-	
 		return head;
-	
-
 }
 
 void rotateLeft(Node *&root, Node *&pt)
 {
+	//makes a right node of the new node for easier rotation
     Node *pt_right = pt->getRight();
- 
     pt->setRight(pt_right->getLeft());
- 
+ 	//checks if the node to be set actually exist before proceding with rotation
     if (pt->getRight() != NULL){
         pt->getRight()->setParent(pt);
     }
     pt_right->setParent(pt->getParent());
- 
     if (pt->getParent() == NULL){
         root = pt_right;
     }else if (pt == pt->getParent()->getLeft()){
@@ -142,7 +132,7 @@ void rotateLeft(Node *&root, Node *&pt)
     pt_right->setLeft(pt);
     pt->setParent(pt_right);
 }
-
+//same thing but just the other way
 void rotateRight(Node *&root, Node *&pt)
 {
     Node *pt_left = pt->getLeft();
@@ -164,7 +154,7 @@ void rotateRight(Node *&root, Node *&pt)
     pt_left->setRight(pt);
     pt->setParent( pt_left);
 }
-
+//prints the tree spacing to make things look clear
 void printTree(Node* head, int space){
     if (head == NULL)
     	return;
@@ -181,7 +171,7 @@ void printTree(Node* head, int space){
     }
     printTree(head->getLeft(), space);
 }
-
+//returns the minimum node - used in deletion (not right now though, just when this was a bst)
 Node* minValueNode(Node* node){
 	Node* current = node;
 	while(current->getLeft()!=NULL){
@@ -189,6 +179,7 @@ Node* minValueNode(Node* node){
 	}
 	return current;
 }
+//this deletion works but doesnt adjust the tree (this was for bst)
 Node* deleteNode(Node* head, int number){
   	
     if(head->getContent()> number){
@@ -213,6 +204,7 @@ Node* deleteNode(Node* head, int number){
 
 
 int main(){
+	//some unused code for bst is commented out
 //get input
 	/* 
 	char* text = new char[400];
@@ -259,6 +251,7 @@ int main(){
 		fixTree(head, pt);
 	}	
 	*/
+	//makes a head so I can call the addNode function
 	Node* head = NULL;
 	while(1){
 		cout << '\n' <<"Enter a command:" << endl;
@@ -271,17 +264,20 @@ int main(){
 		cin.getline(command, 10);
 		int number = 0;
 		if(strcmp(command, "ADD") == 0){
+			//allows adding 1 number to the tree
 			cout << "Enter the number you want to add: " <<endl;
 			cin >> number;
 			cin.get();
+			//makes a new node with the number to be added
 			Node* pt = new Node();
 			pt->setContent(number);
+			//if this is the first time (creating the tree) this function still works because a NULL pointer for head was made
 			head = addNode(head, pt);
+			//calls the method to fix the tree after every insertion
 			fixTree(head, pt);
 		}else if(strcmp(command, "PRINT") == 0){
 			
-            if(head->getContent() == NULL){
-                    
+            if(head == NULL){
                     cout << "There is nothing in the tree" << endl;
                     }else{
                 printTree(head, 0);
@@ -318,11 +314,11 @@ int main(){
 			token = strtok(NULL, ", ");
 			count ++;
 		}
+			//for each item in the storage call the addNode and then fixTree, one by one
 		for(int i =0; i< count; i++){
 			Node* pt = new Node();
 			pt->setContent(stor[i]);
 			head = addNode(head, pt);
-		
 			fixTree(head, pt);
 		}
 	

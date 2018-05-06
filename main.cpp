@@ -13,51 +13,8 @@
 #include <cstdlib>
 #include <cmath>
 using namespace std;
-
-void rotateLeft(Node *&root, Node *&pt)
-{
-    Node *pt_right = pt->getRight();
- 
-    pt->setRight(pt_right->getLeft());
- 
-    if (pt->getRight() != NULL){
-        pt->getRight()->setParent(pt);
-    }
-    pt_right->setParent(pt->getParent());
- 
-    if (pt->getParent() == NULL){
-        root = pt_right;
-    }else if (pt == pt->getParent()->getLeft()){
-        pt->getParent()->setLeft(pt_right);
-}
-    else{
-        pt->getParent()->setRight(pt_right);
-    }
-    pt_right->setLeft(pt);
-    pt->setParent(pt_right);
-}
-
-void rotateRight(Node *&root, Node *&pt)
-{
-    Node *pt_left = pt->getLeft();
-    pt->setLeft(pt_left->getRight());
-    if (pt->getLeft() != NULL){
-        pt->getLeft()->setParent(pt);
-    }
-    pt_left->setParent(pt->getParent());
- 
-    if (pt->getParent() == NULL){
-        root = pt_left;
-    }
-    else if (pt == pt->getParent()->getLeft()){
-        pt->getParent()->setLeft(pt_left);
-    }
-    else{
-        pt->getParent()->setRight(pt_left);
-    }
-    pt_left->setRight(pt);
-    pt->setParent( pt_left);
-}
+void rotateLeft(Node *&root, Node *&pt);
+void rotateRight(Node *&root, Node *&pt);
 
 void fixTree(Node* &root, Node* &pt){
 	Node *parent_pt = NULL;
@@ -161,6 +118,51 @@ Node* addNode(Node* head, Node* pt){
 		return head;
 	
 
+}
+
+void rotateLeft(Node *&root, Node *&pt)
+{
+    Node *pt_right = pt->getRight();
+ 
+    pt->setRight(pt_right->getLeft());
+ 
+    if (pt->getRight() != NULL){
+        pt->getRight()->setParent(pt);
+    }
+    pt_right->setParent(pt->getParent());
+ 
+    if (pt->getParent() == NULL){
+        root = pt_right;
+    }else if (pt == pt->getParent()->getLeft()){
+        pt->getParent()->setLeft(pt_right);
+}
+    else{
+        pt->getParent()->setRight(pt_right);
+    }
+    pt_right->setLeft(pt);
+    pt->setParent(pt_right);
+}
+
+void rotateRight(Node *&root, Node *&pt)
+{
+    Node *pt_left = pt->getLeft();
+    pt->setLeft(pt_left->getRight());
+    if (pt->getLeft() != NULL){
+        pt->getLeft()->setParent(pt);
+    }
+    pt_left->setParent(pt->getParent());
+ 
+    if (pt->getParent() == NULL){
+        root = pt_left;
+    }
+    else if (pt == pt->getParent()->getLeft()){
+        pt->getParent()->setLeft(pt_left);
+    }
+    else{
+        pt->getParent()->setRight(pt_left);
+    }
+    pt_left->setRight(pt);
+    pt->setParent( pt_left);
 }
 
 void printTree(Node* head, int space){
@@ -324,9 +326,6 @@ int main(){
 			fixTree(head, pt);
 		}
 	
-	
-
-	   
         }else if(strcmp(command, "EXIT") == 0){
 			exit(0);
 		}
